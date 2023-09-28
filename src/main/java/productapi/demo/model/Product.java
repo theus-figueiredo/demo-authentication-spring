@@ -14,12 +14,17 @@ public class Product {
   private double price;
   private int quantityInStock;
 
+  @ManyToOne
+  @JoinColumn(name = "category_id")
+  private Category category;
+
+
   //------------------------------------ Constructors ----------------------------
 
   public Product() {}
 
 
-  public Product(String name, double price, int quantityInStock) {
+  public Product(String name, double price, int quantityInStock, Category category) {
     this.name = name;
     this.price = price;
     this.quantityInStock = quantityInStock;
@@ -49,6 +54,14 @@ public class Product {
 
   public int getQuantityInStock() {
     return quantityInStock;
+  }
+
+  public Category getCategory() {
+    return category;
+  }
+
+  public void setCategory(Category category) {
+    this.category = category;
   }
 
   public void setQuantityInStock(int quantityInStock) {
