@@ -1,27 +1,27 @@
 package productapi.demo.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import productapi.demo.model.Category;
 import productapi.demo.repository.CategoryRepository;
 
-import java.util.Optional;
 
 @Service
 public class CategoryService {
 
   private final CategoryRepository categoryRepository;
 
+  @Autowired
   public CategoryService(CategoryRepository categoryRepository) {
     this.categoryRepository = categoryRepository;
   }
 
-  public Optional<Category> createCategory(String name) {
-    if (name.isEmpty()) return Optional.empty();
-
+  public Category createCategory(@NotNull String name) {
     Category cat = new Category(name);
     categoryRepository.save(cat);
-    return Optional.of(cat);
+    return cat;
   }
 
 
@@ -36,7 +36,7 @@ public class CategoryService {
 
   }
 
-  public Category update(Long id, String name) {
+  public Category update(Long id, @NotNull String name) {
     Category cat = categoryRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
