@@ -4,7 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
-public class ProductCreationRequestDTO {
+public class ProductRequestDTO {
 
   @NotBlank(message = "Name must not be blank")
   private String name;

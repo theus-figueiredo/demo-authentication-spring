@@ -3,14 +3,13 @@ package productapi.demo.service;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ValidationException;
-import jakarta.validation.constraints.NotNull;
 import org.springframework.validation.Validator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.Errors;
 import productapi.demo.dto.ProductBasicDTO;
-import productapi.demo.dto.ProductCreationRequestDTO;
+import productapi.demo.dto.ProductRequestDTO;
 import productapi.demo.model.Category;
 import productapi.demo.model.Product;
 import productapi.demo.repository.CategoryRepository;
@@ -43,7 +42,7 @@ public class ProductService {
   //---------------------------------- METHODS -----------------------------------
 
   //CREATE
-  public Product addProduct(ProductCreationRequestDTO prodData) throws Exception {
+  public Product addProduct(ProductRequestDTO prodData) throws Exception {
     Errors errors = new BeanPropertyBindingResult(prodData, "prodata");
     productDTOValidator.validate(prodData, errors);
 
