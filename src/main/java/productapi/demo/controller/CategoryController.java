@@ -52,6 +52,7 @@ public class CategoryController {
     try {
       Category category = categoryService.getById(id);
       return ResponseEntity.ok(category);
+
     } catch (EntityNotFoundException e) {
       return ResponseEntity.notFound().build();
     }
@@ -62,7 +63,6 @@ public class CategoryController {
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.ACCEPTED)
   public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody CategoryRequestDTO categoryRequestDTO) {
-
     try {
       Category updatedCategory = categoryService.update(id, categoryRequestDTO);
       return ResponseEntity.ok(updatedCategory);
@@ -80,7 +80,6 @@ public class CategoryController {
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
   public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
-
     try {
       categoryService.delete(id);
       return ResponseEntity.noContent().build();
