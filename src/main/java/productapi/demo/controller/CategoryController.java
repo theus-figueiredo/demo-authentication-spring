@@ -2,9 +2,12 @@ package productapi.demo.controller;
 
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import productapi.demo.dto.CategoryRequestDTO;
 import productapi.demo.model.Category;
@@ -12,12 +15,12 @@ import productapi.demo.service.CategoryService;
 
 
 @RestController
-@RequestMapping("api/categories")
+@RequestMapping("/api/categories")
 public class CategoryController {
 
   private final CategoryService categoryService;
 
-  //---------------------------------- CONSTRUCTOR -----------------------------------
+  //---------------------------------- CONSTRUCTOR -------------------------------
 
   @Autowired
   public CategoryController(CategoryService categoryService) {
@@ -29,7 +32,11 @@ public class CategoryController {
   //CREATE
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity<Category> createCategorie(@RequestBody CategoryRequestDTO requestDTO) {
+  public ResponseEntity<?> createCategorie(@Valid @RequestBody CategoryRequestDTO requestDTO, @NotNull BindingResult bindingResult) {
+    if (bindingResult.hasErrors()) {
+      return ResponseEntity.badRequest().body("Name must not be blank");
+    }
+
     Category newCat = this.categoryService.createCategory(requestDTO);
 
     return ResponseEntity.ok(newCat);
@@ -62,7 +69,14 @@ public class CategoryController {
   //UPDATE
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.ACCEPTED)
-  public ResponseEntity<Category> updateCategory(@PathVariable Long id, @RequestBody CategoryRequestDTO categoryRequestDTO) {
+  public ResponseEntity<?> updateCategory(
+          @PathVariable Long id,
+          @Valid @RequestBody CategoryRequestDTO categoryRequestDTO,
+          @NotNull BindingResult bindingResult
+  ) {
+
+    if (bindingResult.hasErrors()) return ResponseEntity.badRequest().body("Name must not be empty");
+
     try {
       Category updatedCategory = categoryService.update(id, categoryRequestDTO);
       return ResponseEntity.ok(updatedCategory);
@@ -71,7 +85,7 @@ public class CategoryController {
       return ResponseEntity.notFound().build();
 
     } catch (IllegalArgumentException e) {
-      return ResponseEntity.badRequest().build();
+      return ResponseEntity.badRequest().body(e.getMessage());
     }
   }
 
@@ -79,7 +93,7 @@ public class CategoryController {
   //DELETE
   @DeleteMapping("/{id}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public ResponseEntity<Void> deleteCategory(@PathVariable Long id) {
+  public ResponseEntity<?> deleteCategory(@PathVariable Long id) {
     try {
       categoryService.delete(id);
       return ResponseEntity.noContent().build();

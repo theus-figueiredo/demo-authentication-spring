@@ -2,9 +2,12 @@ package productapi.demo.controller;
 
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
+import jakarta.validation.ValidationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import productapi.demo.dto.ProductBasicDTO;
 import productapi.demo.dto.ProductRequestDTO;
@@ -30,13 +33,22 @@ public class ProductController {
   //CREATE
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
-  public ResponseEntity<Product> store(@RequestBody ProductRequestDTO productRequestDTO) {
+  public ResponseEntity<?> store(@Valid @RequestBody ProductRequestDTO productRequestDTO, BindingResult bindingResult) {
+
+    if (bindingResult.hasErrors()) return ResponseEntity.badRequest().body("Invalid data sent");
+
     try {
       Product newProduct = productService.addProduct(productRequestDTO);
       return ResponseEntity.ok(newProduct);
 
+    } catch (EntityNotFoundException e) {
+      return ResponseEntity.notFound().build();
+
+    } catch (ValidationException e) {
+      return ResponseEntity.badRequest().body("Invalid Data");
+
     } catch (Exception e) {
-      return ResponseEntity.badRequest().build();
+      return ResponseEntity.badRequest().body(e.getMessage());
     }
   }
 
@@ -67,7 +79,7 @@ public class ProductController {
   //UPDATE
   @PutMapping("/{id}")
   @ResponseStatus(HttpStatus.ACCEPTED)
-  public ResponseEntity<Product> updateProduct(@PathVariable Long id, ProductBasicDTO productDTO) {
+  public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductBasicDTO productDTO) {
     try {
       Product updatedProduct = productService.updateProduct(productDTO, id);
       return  ResponseEntity.ok(updatedProduct);

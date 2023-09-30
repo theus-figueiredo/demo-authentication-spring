@@ -3,8 +3,8 @@ package productapi.demo.dto;
 public class ProductBasicDTO {
 
   private String name;
-  private double price;
-  private int quantityInStock;
+  private Double price;
+  private Integer quantityInStock;
   private Long categoryId;
 
   public String getName() {
@@ -15,19 +15,19 @@ public class ProductBasicDTO {
     this.name = name;
   }
 
-  public double getPrice() {
+  public Double getPrice() {
     return price;
   }
 
-  public void setPrice(double price) {
+  public void setPrice(Double price) {
     this.price = price;
   }
 
-  public int getQuantityInStock() {
+  public Integer getQuantityInStock() {
     return quantityInStock;
   }
 
-  public void setQuantityInStock(int quantityInStock) {
+  public void setQuantityInStock(Integer quantityInStock) {
     this.quantityInStock = quantityInStock;
   }
 

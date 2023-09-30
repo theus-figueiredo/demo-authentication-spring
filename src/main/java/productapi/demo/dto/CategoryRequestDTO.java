@@ -1,12 +1,12 @@
 package productapi.demo.dto;
 
+
 import jakarta.validation.constraints.NotBlank;
 
 public class CategoryRequestDTO {
 
-  @NotBlank(message = "the category name must not be blank")
+  @NotBlank
   private String name;
-
 
   public String getName() {
     return name;

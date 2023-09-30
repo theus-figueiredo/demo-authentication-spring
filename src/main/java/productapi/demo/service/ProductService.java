@@ -16,6 +16,7 @@ import productapi.demo.repository.CategoryRepository;
 import productapi.demo.repository.ProductRepository;
 
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 @Service
 public class ProductService {
@@ -43,13 +44,6 @@ public class ProductService {
 
   //CREATE
   public Product addProduct(ProductRequestDTO prodData) throws Exception {
-    Errors errors = new BeanPropertyBindingResult(prodData, "prodata");
-    productDTOValidator.validate(prodData, errors);
-
-    if (errors.hasErrors()) {
-      throw new ValidationException("Validation Error");
-    }
-
     try {
 
       Category cat = categoryRepository.findById(prodData.getCategoryId())
@@ -90,14 +84,24 @@ public class ProductService {
       Product productToUpdate = productRepository.findById(id)
               .orElseThrow(() -> new EntityNotFoundException("Product not found"));
 
-      Field[] fields = ProductBasicDTO.class.getFields();
+      Field[] fields = ProductBasicDTO.class.getDeclaredFields();
 
       for (Field field: fields) {
         field.setAccessible(true);
         Object newValue = field.get(productDTO);
 
         if (newValue != null) {
-          field.set(productToUpdate, newValue);
+
+          if (field.getName().equals("categoryId")) {
+            Category category = categoryRepository.findById((Long) newValue)
+                    .orElseThrow(() -> new EntityNotFoundException("Category not found"));
+
+            productToUpdate.setCategory(category);
+          } else {
+            Field productField = Product.class.getDeclaredField(field.getName());
+            productField.setAccessible(true);
+            productField.set(productToUpdate, newValue);
+          }
         }
       }
 

@@ -1,7 +1,7 @@
 package productapi.demo.dto;
 
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.PositiveOrZero;
 
 public class ProductRequestDTO {
@@ -15,7 +15,7 @@ public class ProductRequestDTO {
   @PositiveOrZero(message = "Quantity in stock must be at least 0 or higher")
   private int quantityInStock;
 
-  @NotNull(message = "Category id must not be null")
+  @Positive(message = "Category id must be at least 1")
   private Long categoryId;
 
 

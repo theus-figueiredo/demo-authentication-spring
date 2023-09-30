@@ -1,6 +1,7 @@
 package productapi.demo.service;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,8 @@ public class CategoryService {
     this.categoryRepository = categoryRepository;
   }
 
-  public Category createCategory(CategoryRequestDTO requestDTO) {
+
+  public Category createCategory(@NotNull @Valid CategoryRequestDTO requestDTO) {
     Category cat = new Category(requestDTO.getName());
     categoryRepository.save(cat);
     return cat;
@@ -36,6 +38,7 @@ public class CategoryService {
             .orElseThrow(() -> new EntityNotFoundException("Categoria não encontrada"));
 
   }
+
 
   public Category update(Long id, @NotNull CategoryRequestDTO categoryRequestDTO) {
     Category cat = categoryRepository.findById(id)
